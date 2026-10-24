@@ -26,10 +26,20 @@ class CharacterViewController: UIViewController {
         characterTableView.register(CharacterTableViewCell.self, forCellReuseIdentifier: CharacterTableViewCell.reuseIdentifier)
         characterTableView.dataSource = self
         characterTableView.delegate = self
+        characterTableView.keyboardDismissMode = .onDrag
         model.filterCharacters(with: "")
         characterTableView.reloadData()
         characterTableView.rowHeight = UITableView.automaticDimension
         characterTableView.estimatedRowHeight = 64
+        let tap = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
 }
