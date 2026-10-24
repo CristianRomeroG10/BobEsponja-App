@@ -11,6 +11,8 @@ class FavoritesViewController: UIViewController {
 
     @IBOutlet weak var favoritesTableView: UITableView!
     
+    let model = FavoritesModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpView()
@@ -31,22 +33,45 @@ class FavoritesViewController: UIViewController {
         favoritesTableView.estimatedRowHeight = 75
     }
 
+    func showDeleteAlert(at indexPath: IndexPath, completion: @escaping (Bool) -> Void){
+        let favoriteCharacter = model.getFavoriteCharacter(index: indexPath)
+        let title = "Eliminar favorito"
+        let message = "Seguro que quieres eliminar a \(favoriteCharacter.alias)"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel) { _ in
+            completion(false)
+        }
+        let deleteAction = UIAlertAction(title: "Eliminar", style: .destructive) { [weak self] _ in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+            
+            self.model.removeCharacters(at: indexPath)
+            self.favoritesTableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        
+        alert.addAction(cancelAction)
+        alert.addAction(deleteAction)
+        present(alert, animated: true)
+        
+    }
 
 }
 
 extension FavoritesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        favoriteCharacters.count
+        model.getNumberOfRows()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: FavoritesTableViewCell.reuseIdentifier, for: indexPath) as? FavoritesTableViewCell else {
             return UITableViewCell()
         }
-        let favorite = favoriteCharacters[indexPath.row]
+        let favorite = model.getFavoriteCharacter(index: indexPath)
         cell.configuration(with: favorite)
         return cell
-        
     }
     
 
@@ -62,9 +87,11 @@ extension FavoritesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteFavorite = UIContextualAction(style: .destructive, title: "Eliminar Favorito") { _, _, complention in
-            favoriteCharacters.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            complention(true)
+//            self.model.removeCharacters(at: indexPath)
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//            complention(true)
+            //NOS LLEVAMOS EL FUNCIONAMIENTO DE ELIMINAR LA ALERTA PREVENTIVA
+            self.showDeleteAlert(at: indexPath, completion: complention)
         }
         deleteFavorite.image = UIImage(systemName: "trash")
         
