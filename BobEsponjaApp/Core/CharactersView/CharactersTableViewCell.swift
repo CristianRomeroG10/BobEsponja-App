@@ -45,6 +45,10 @@ class CharacterTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        characterImage.layer.cornerRadius = characterImage.bounds.width/2
+    }
     
     func setUpView(){
         accessoryType = .disclosureIndicator

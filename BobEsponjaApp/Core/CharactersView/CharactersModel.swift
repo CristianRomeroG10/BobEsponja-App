@@ -138,7 +138,7 @@ class characterTableViewModel {
                             description: "Plankton es el diminuto dueño del Balde de Carnada y el rival constante de Don Cangrejo. Su gran objetivo es conseguir la fórmula secreta de las cangreburgers para convertir su restaurante en un éxito. Para lograrlo diseña máquinas, disfraces y estrategias que suelen ser mucho más complicadas de lo necesario.\nCuenta con la ayuda de Karen, aunque su orgullo le impide escuchar muchos de sus consejos. Su ambición contrasta con su pequeño tamaño y con los repetidos fracasos de sus planes. Aun así, rara vez se rinde: cada derrota se transforma rápidamente en una nueva idea para intentar superar al Crustáceo Cascarudo."
                         ),
                         CharactersModel(
-                            image: "señora_puff",
+                            image: "senora_puff",
                             alias: "Señora Puff",
                             name: "Virginia",
                             lastName: "Puff",
@@ -147,5 +147,14 @@ class characterTableViewModel {
                             description: "La señora Puff es un pez globo que trabaja como instructora en una escuela de conducción de Fondo de Bikini. Enseña a sus alumnos a manejar botes y procura mantener la calma incluso en las lecciones más complicadas. Su mayor desafío es Bob Esponja, cuyo nerviosismo al volante convierte muchos exámenes en auténticos desastres.\nCuando se asusta o se encuentra bajo demasiada presión, se infla como una reacción característica de su especie. Aunque las clases de Bob Esponja ponen a prueba su paciencia, sigue intentando cumplir con su trabajo. Su vida cotidiana combina el deseo de tranquilidad con las consecuencias impredecibles de tener al alumno más entusiasta de la ciudad."
                         )
         ]
+    }
+    
+    
+    func getNumberOfRows() -> Int {
+        characters.count
+    }
+    
+    func getCharacter(index: Int) -> CharactersModel {
+        return characters[index]
     }
 }
