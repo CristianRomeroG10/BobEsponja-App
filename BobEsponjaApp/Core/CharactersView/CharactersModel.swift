@@ -6,7 +6,12 @@
 //
 
 import Foundation
+import UIKit
 
+struct CharacterSection{
+    let title: String
+    let characters: [CharactersModel]
+}
 
 struct CharactersModel {
     let image: String
@@ -26,7 +31,9 @@ struct CharactersModel {
 
 class characterTableViewModel {
     let characters: [CharactersModel]
+    
     private(set) var filterCharacters: [CharactersModel] = []
+    private(set) var sections: [CharacterSection] = []
     init() {
         characters = [
             CharactersModel(
@@ -149,15 +156,30 @@ class characterTableViewModel {
         ]
         
 //        filterCharacters = characters
+        upDateSections()
     }
     
-    
-    func getNumberOfRows() -> Int {
-        filterCharacters.count
+    private func upDateSections(){
+        let grouped = Dictionary(grouping: filterCharacters, by: \.occupation)
+        sections = grouped.keys.sorted().map({ title in
+            CharacterSection(title: title, characters: grouped[title] ?? [])
+        })
     }
     
-    func getCharacter(index: Int) -> CharactersModel {
-        return filterCharacters[index]
+    func getNumberOfSection() -> Int {
+        sections.count
+    }
+    
+    func getNumberOfRows(section: Int) -> Int {
+        sections[section].characters.count
+    }
+    
+    func getCharacter(index: IndexPath) -> CharactersModel {
+        sections[index.section].characters[index.row]
+    }
+    
+    func getTitle(section: Int) -> String {
+        sections[section].title
     }
     
     func filterCharacters(with text: String) {
@@ -172,5 +194,6 @@ class characterTableViewModel {
                 $0.alias.localizedStandardContains(query)
             }
         }
+        upDateSections()
     }
 }

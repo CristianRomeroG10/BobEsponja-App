@@ -36,16 +36,16 @@ class CharacterViewController: UIViewController {
 
 extension CharacterViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        1
+        model.getNumberOfSection()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.getNumberOfRows()
+        model.getNumberOfRows(section: section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CharacterTableViewCell.reuseIdentifier, for: indexPath) as? CharacterTableViewCell else {return UITableViewCell()}
-        let character = model.getCharacter(index: indexPath.row)
+        let character = model.getCharacter(index: indexPath)
         cell.configure(with: character)
         return cell
     }
@@ -57,7 +57,7 @@ extension CharacterViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let charactersDetailView = CharactersDetailViewController()
-        charactersDetailView.character = model.getCharacter(index: indexPath.row)
+        charactersDetailView.character = model.getCharacter(index: indexPath)
         navigationController?.pushViewController(charactersDetailView, animated: true)
     }
     
@@ -69,7 +69,7 @@ extension CharacterViewController: UITableViewDelegate {
 //        case 2: return "Los Simpson"
 //        default: return ""
 //        }
-        "Bob Esponja"
+        model.getTitle(section: section)
     }
     
     //Podemos modificar la altura de la celda
@@ -79,7 +79,7 @@ extension CharacterViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let addFavorite = UIContextualAction(style: .normal, title: "Agregar favorito") { _, _, completion in
-            let character = self.model.characters[indexPath.row]
+            let character = self.model.getCharacter(index: indexPath)
 
             if !favoriteCharacters.contains(where: { $0.alias == character.alias}){
                 favoriteCharacters.append(character)
