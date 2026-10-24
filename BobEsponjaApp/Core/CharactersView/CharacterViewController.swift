@@ -7,10 +7,12 @@
 
 import UIKit
 
+var favoriteCharacters: [CharactersModel] = []
 
 class CharacterViewController: UIViewController {
     
     @IBOutlet weak var characterTableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     let model = characterTableViewModel()
     
@@ -24,6 +26,8 @@ class CharacterViewController: UIViewController {
         characterTableView.register(CharacterTableViewCell.self, forCellReuseIdentifier: CharacterTableViewCell.reuseIdentifier)
         characterTableView.dataSource = self
         characterTableView.delegate = self
+        model.filterCharacters(with: "")
+        characterTableView.reloadData()
         characterTableView.rowHeight = UITableView.automaticDimension
         characterTableView.estimatedRowHeight = 64
     }
@@ -72,4 +76,30 @@ extension CharacterViewController: UITableViewDelegate {
 //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //        300
 //    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let addFavorite = UIContextualAction(style: .normal, title: "Agregar favorito") { _, _, completion in
+            let character = self.model.characters[indexPath.row]
+
+            if !favoriteCharacters.contains(where: { $0.alias == character.alias}){
+                favoriteCharacters.append(character)
+            }
+            completion(true)
+        }
+        
+        addFavorite.image = UIImage(systemName: "heart.fill")
+        addFavorite.backgroundColor = .systemPink
+        
+        let configuration = UISwipeActionsConfiguration(actions: [addFavorite])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+    }
+}
+
+
+extension CharacterViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        model.filterCharacters(with: searchText)
+        characterTableView.reloadData()
+    }
 }

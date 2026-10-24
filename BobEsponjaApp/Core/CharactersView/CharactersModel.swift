@@ -26,7 +26,7 @@ struct CharactersModel {
 
 class characterTableViewModel {
     let characters: [CharactersModel]
-    
+    private(set) var filterCharacters: [CharactersModel] = []
     init() {
         characters = [
             CharactersModel(
@@ -147,14 +147,30 @@ class characterTableViewModel {
                             description: "La señora Puff es un pez globo que trabaja como instructora en una escuela de conducción de Fondo de Bikini. Enseña a sus alumnos a manejar botes y procura mantener la calma incluso en las lecciones más complicadas. Su mayor desafío es Bob Esponja, cuyo nerviosismo al volante convierte muchos exámenes en auténticos desastres.\nCuando se asusta o se encuentra bajo demasiada presión, se infla como una reacción característica de su especie. Aunque las clases de Bob Esponja ponen a prueba su paciencia, sigue intentando cumplir con su trabajo. Su vida cotidiana combina el deseo de tranquilidad con las consecuencias impredecibles de tener al alumno más entusiasta de la ciudad."
                         )
         ]
+        
+//        filterCharacters = characters
     }
     
     
     func getNumberOfRows() -> Int {
-        characters.count
+        filterCharacters.count
     }
     
     func getCharacter(index: Int) -> CharactersModel {
-        return characters[index]
+        return filterCharacters[index]
+    }
+    
+    func filterCharacters(with text: String) {
+        let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if query.isEmpty {
+            filterCharacters = characters
+        }else {
+            filterCharacters = characters.filter{
+                $0.fullName.localizedStandardContains(query) ||
+                $0.species.localizedStandardContains(query) ||
+                $0.occupation.localizedStandardContains(query) ||
+                $0.alias.localizedStandardContains(query)
+            }
+        }
     }
 }
